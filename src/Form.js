@@ -9,10 +9,12 @@ class Form extends Component {
       userName: '', 
       email: '',
       password: '',
-      formErrors: {userName: '', email: '', password: ''},
+      reEnterPassword: '',
+      formErrors: {userName: '', email: '', password: '', reEnterPassword:''},
       userNameValid: false,
       emailValid: false,
       passwordValid: false,
+      reEnterPassword: false,
       formValid: false
     }
   }
@@ -29,6 +31,8 @@ class Form extends Component {
     let userNameValid = this.state.userNameValid;
     let emailValid = this.state.emailValid;
     let passwordValid = this.state.passwordValid;
+    let checkPassword = '';
+    let reEnterPasswordValid = this.state.reEnterPasswordValid;
 
     switch(fieldName) {
       case 'userName':
@@ -42,19 +46,24 @@ class Form extends Component {
       case 'password':
         passwordValid = value.length >= 6;
         fieldValidationErrors.password = passwordValid ? '': ' is too short';
+        checkPassword = value;
         break;
+      case 'reEnterPassword':
+        reEnterPasswordValid = (value =  checkPassword);
+        fieldValidationErrors.reEnterPassword = reEnterPasswordValid ? '': 'The password does not match';
       default:
         break;
     }
     this.setState({formErrors: fieldValidationErrors,
                     userNameValid: userNameValid,
                     emailValid: emailValid,
-                    passwordValid: passwordValid
+                    passwordValid: passwordValid,
+                    reEnterPasswordValid: reEnterPasswordValid
                   }, this.validateForm);
   }
 
   validateForm() {
-    this.setState({formValid: this.state.userNameValid && this.state.emailValid && this.state.passwordValid});
+    this.setState({formValid: this.state.userNameValid && this.state.emailValid && this.state.passwordValid && this.state.reEnterPassword});
   }
 
   errorClass(error) {
@@ -82,6 +91,7 @@ class Form extends Component {
             value={this.state.email}
             onChange={this.handleUserInput}  />
         </div>
+
         <div className={`form-group ${this.errorClass(this.state.formErrors.password)}`}>
           <label htmlFor="password">Password</label>
           <input type="password" className="form-control" name="password"
@@ -90,6 +100,14 @@ class Form extends Component {
             onChange={this.handleUserInput}  />
         </div>
         
+        <div className={`form-group ${this.errorClass(this.state.formErrors.reEnterPassword)}`}>
+          <label htmlFor="reEnterPassword">reEnterPassword</label>
+          <input type="password" className="form-control" name="reEnterPassword"
+            placeholder="Please Enter the Password again"
+            value={this.state.reEnterPassword}
+            onChange={this.handleUserInput}  />
+        </div>
+
         <button type="submit" className="btn btn-primary" disabled={!this.state.formValid}>Sign up</button>
       </form>
     )
